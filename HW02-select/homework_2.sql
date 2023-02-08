@@ -171,6 +171,7 @@ order by
 
 select distinct
 	s_c.CustomerID,
+	s_c.CustomerName,
 	s_c.PhoneNumber
 from
 	Sales.Invoices s_i
