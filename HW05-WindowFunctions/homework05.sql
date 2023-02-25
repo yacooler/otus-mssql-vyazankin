@@ -210,21 +210,23 @@ GROUP BY
 6. Выберите по каждому клиенту два самых дорогих товара, которые он покупал.
 В результатах должно быть ид клиета, его название, ид товара, цена, дата покупки.
 */
+
+
+--Предполагаем, что в InvoiceLines могут быть произвольные цены на товары в UnitPrice. Ищем максимальные цены для каждого проданного товара
+--и дату продажи по данной цене
 WITH CTE_LastCustoms 
 AS
 	(SELECT
 		s_i.CustomerID as CustomerID,
+		s_i.InvoiceID as InvoiceID,
+		s_i.InvoiceDate as InvoiceDate,
 		s_il.StockItemID as StockItemID,
-		max(s_il.UnitPrice) as UnitPrice,
-		max(s_i.InvoiceID) as InvoiceID,
-		max(s_i.InvoiceDate) as InvoiceDate
+		s_il.UnitPrice as UnitPrice,
+		ROW_NUMBER() over (partition by s_i.CustomerID, s_il.StockItemID order by s_il.UnitPrice desc, s_i.InvoiceDate desc) as rn_for_max
 	FROM
 		Sales.Invoices s_i 
 		JOIN Sales.InvoiceLines s_il
-			on s_il.InvoiceID = s_i.InvoiceID
-	GROUP BY
-		s_i.CustomerID,
-		s_il.StockItemID)
+			on s_il.InvoiceID = s_i.InvoiceID)
 SELECT 
 	s_c.CustomerID as CustomerID,
 	s_c.CustomerName as CustomerName,
@@ -234,14 +236,16 @@ SELECT
 FROM
 	Sales.Customers s_c
 	JOIN	(SELECT 
-			CustomerID,
-			StockItemID,
-			UnitPrice,
-			InvoiceID,
-			InvoiceDate,
-			ROW_NUMBER() over (partition by cte_lc.CustomerID order by cte_lc.CustomerID, cte_lc.UnitPrice desc) as rn
-		FROM
-			CTE_LastCustoms cte_lc) ranged
+				CustomerID,
+				StockItemID,
+				UnitPrice,
+				InvoiceID,
+				InvoiceDate,
+				ROW_NUMBER() over (partition by cte_lc.CustomerID order by cte_lc.CustomerID, cte_lc.UnitPrice desc) as rn
+			FROM
+				CTE_LastCustoms cte_lc
+			WHERE cte_lc.rn_for_max = 1 --row with top price per unit and last date
+			) ranged
 		ON s_c.CustomerID = ranged.CustomerID
 		and ranged.rn <= 2
 ORDER BY 
