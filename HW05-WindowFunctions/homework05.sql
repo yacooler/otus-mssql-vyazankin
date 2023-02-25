@@ -234,14 +234,14 @@ SELECT
 FROM
 	Sales.Customers s_c
 	JOIN	(SELECT 
-				CustomerID,
-				StockItemID,
-				UnitPrice,
-				InvoiceID,
-				InvoiceDate,
-				ROW_NUMBER() over (partition by cte_lc.CustomerID order by cte_lc.CustomerID, cte_lc.UnitPrice desc) as rn
-			FROM
-				CTE_LastCustoms cte_lc) ranged
+			CustomerID,
+			StockItemID,
+			UnitPrice,
+			InvoiceID,
+			InvoiceDate,
+			ROW_NUMBER() over (partition by cte_lc.CustomerID order by cte_lc.CustomerID, cte_lc.UnitPrice desc) as rn
+		FROM
+			CTE_LastCustoms cte_lc) ranged
 		ON s_c.CustomerID = ranged.CustomerID
 		and ranged.rn <= 2
 ORDER BY 
