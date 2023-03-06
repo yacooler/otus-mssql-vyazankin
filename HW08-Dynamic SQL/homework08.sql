@@ -41,9 +41,9 @@ InvoiceMonth | Aakriti Byrraju    | Abel Spirlea       | Abel Tatarescu | ... (Ð
 -------------+--------------------+--------------------+----------------+----------------------
 */
 
-DECLARE @DYN_SQL varchar(8000);
+DECLARE @DYN_SQL nvarchar(max);
 
-DECLARE @COLUMNS varchar(8000);
+DECLARE @COLUMNS nvarchar(max);
 
 SELECT 
 @COLUMNS = STUFF(
