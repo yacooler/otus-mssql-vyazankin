@@ -373,7 +373,7 @@ go
 --Для OUTPUT папки нужно добавить права, чтобы MS SQL имел возможность туда писать
 exec master..xp_cmdshell 'bcp "WideWorldImporters.Sales.Customers" out "C:\Users\vagrant\Desktop\BCP_OUT\sales_customers.csv" -T -w -t"!@#$%" -k -S WIN-LHPGJN0227F'
 
---https://stackoverflow.com/questions/35229957/error-microsoftodbc-driver-11-for-sql-serverwarning-bcp-import-with-a-for
+
 
 --output
 --NULL
@@ -386,6 +386,10 @@ exec master..xp_cmdshell 'bcp "WideWorldImporters.Sales.Customers" out "C:\Users
 --Clock Time (ms.) Total     : 16     Average : (41750.00 rows per sec.)
 --NULL
 
+--Error = [Microsoft][ODBC Driver 17 for SQL Server]Warning: BCP import with a format file will convert empty strings in delimited columns to NULL.
+--Данная строка является ворнингом, означающим конвертацию пустых строк в NULL. Вероятно, для пустых строк можно создать спец. последовательность
+--и учитывать ее при/после загрузки.
+--https://stackoverflow.com/questions/35229957/error-microsoftodbc-driver-11-for-sql-serverwarning-bcp-import-with-a-for 
 
 
 /*DATA LOADING*/
