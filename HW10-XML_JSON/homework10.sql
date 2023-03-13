@@ -306,3 +306,17 @@ GROUP BY
 --65	RC vintage American toy coupe with remote control (Black) 1/50 scale	Radio Control,Realistic Sound,Vintage
 --73	Ride on vintage American toy coupe (Red) 1/12 scale	Vintage,So Realistic
 --74	Ride on vintage American toy coupe (Black) 1/12 scale	Vintage,So Realistic
+
+--Вариант 2
+SELECT 
+	w_si.StockItemID as StockItemID,
+	w_si.StockItemName as StockItemName,
+	STRING_AGG(nestTags.value,',') as Tags
+FROM
+	Warehouse.StockItems w_si
+	CROSS APPLY OPENJSON(w_si.CustomFields,'$.Tags') nestTags
+GROUP BY 
+	w_si.StockItemID,
+	w_si.StockItemName
+HAVING 
+	MAX(CASE WHEN nestTags.value = 'Vintage' then 1 else 0 end) = 1;
