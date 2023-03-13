@@ -299,3 +299,10 @@ WHERE EXISTS(
 GROUP BY 
 	CTE_ItemsWithTags.StockItemID,
 	CTE_ItemsWithTags.StockItemName;
+
+/*--------------------RESULT--------------*/
+--StockItemID	StockItemName	Tags
+--64	RC vintage American toy coupe with remote control (Red) 1/50 scale	Radio Control,Realistic Sound,Vintage
+--65	RC vintage American toy coupe with remote control (Black) 1/50 scale	Radio Control,Realistic Sound,Vintage
+--73	Ride on vintage American toy coupe (Red) 1/12 scale	Vintage,So Realistic
+--74	Ride on vintage American toy coupe (Black) 1/12 scale	Vintage,So Realistic
