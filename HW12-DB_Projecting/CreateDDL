@@ -1,0 +1,938 @@
+/*Сгеренирован автоматически в PowerDesigner 16*/
+
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('Bank_file') and o.name = 'fk_bank_file_ref_bank_file_detail')
+alter table Bank_file
+   drop constraint fk_bank_file_ref_bank_file_detail
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('House') and o.name = 'fk_house_ref_street')
+alter table House
+   drop constraint fk_house_ref_street
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('account') and o.name = 'fk_account_join_flat')
+alter table account
+   drop constraint fk_account_join_flat
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('account_payment') and o.name = 'fk_account_ref_account_payment')
+alter table account_payment
+   drop constraint fk_account_ref_account_payment
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('account_payment') and o.name = 'fk_bank_file_detail_ref_account_payment')
+alter table account_payment
+   drop constraint fk_bank_file_detail_ref_account_payment
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('account_payment_details') and o.name = 'fk_account_payment_ref_account_payment_detail')
+alter table account_payment_details
+   drop constraint fk_account_payment_ref_account_payment_detail
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('account_payment_details') and o.name = 'fk_service_ref_account_payment_details')
+alter table account_payment_details
+   drop constraint fk_service_ref_account_payment_details
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('account_payment_link_lawsuit') and o.name = 'fk_account_payment_details_ref_account_payment_link_lawsuit')
+alter table account_payment_link_lawsuit
+   drop constraint fk_account_payment_details_ref_account_payment_link_lawsuit
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('account_payment_link_lawsuit') and o.name = 'fk_lawsuit_detail_ref_account_payment_link_lawsuit')
+alter table account_payment_link_lawsuit
+   drop constraint fk_lawsuit_detail_ref_account_payment_link_lawsuit
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('bank_file_detail') and o.name = 'fk_bank_file_ref_bank_file_detail')
+alter table bank_file_detail
+   drop constraint fk_bank_file_ref_bank_file_detail
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('city') and o.name = 'fk_city_ref_mo')
+alter table city
+   drop constraint fk_city_ref_mo
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('flat') and o.name = 'fk_flat_ref_house')
+alter table flat
+   drop constraint fk_flat_ref_house
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('lawsuit') and o.name = 'fk_owner_term_ref_lawsuit')
+alter table lawsuit
+   drop constraint fk_owner_term_ref_lawsuit
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('lawsuit_detail') and o.name = 'fk_lawsuit_ref_lawsuit_detail')
+alter table lawsuit_detail
+   drop constraint fk_lawsuit_ref_lawsuit_detail
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('lawsuit_detail') and o.name = 'fk_service_ref_lawsuit_detail')
+alter table lawsuit_detail
+   drop constraint fk_service_ref_lawsuit_detail
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('owner') and o.name = 'fk_owner_type_ref_owner')
+alter table owner
+   drop constraint fk_owner_type_ref_owner
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('owner_term') and o.name = 'fk_account_ref_owner_term')
+alter table owner_term
+   drop constraint fk_account_ref_owner_term
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('owner_term') and o.name = 'fk_owner_ref_owner_term')
+alter table owner_term
+   drop constraint fk_owner_ref_owner_term
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('street') and o.name = 'fk_street_ref_city')
+alter table street
+   drop constraint fk_street_ref_city
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('street') and o.name = 'fk_street_type_ref_street')
+alter table street
+   drop constraint fk_street_type_ref_street
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('Bank')
+            and   type = 'U')
+   drop table Bank
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('Bank_file')
+            and   name  = 'fk_bank_ref_bank_file_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index Bank_file.fk_bank_ref_bank_file_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('Bank_file')
+            and   type = 'U')
+   drop table Bank_file
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('House')
+            and   name  = 'fk_house_ref_street_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index House.fk_house_ref_street_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('House')
+            and   type = 'U')
+   drop table House
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('account')
+            and   name  = 'fk_account_join_flat_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index account.fk_account_join_flat_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('account')
+            and   type = 'U')
+   drop table account
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('account_payment')
+            and   name  = 'fk_bank_file_detail_ref_account_payment_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index account_payment.fk_bank_file_detail_ref_account_payment_FK
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('account_payment')
+            and   name  = 'fk_account_ref_account_payment_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index account_payment.fk_account_ref_account_payment_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('account_payment')
+            and   type = 'U')
+   drop table account_payment
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('account_payment_details')
+            and   name  = 'fk_account_payment_ref_account_payment_detail_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index account_payment_details.fk_account_payment_ref_account_payment_detail_FK
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('account_payment_details')
+            and   name  = 'fk_service_ref_account_payment_details_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index account_payment_details.fk_service_ref_account_payment_details_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('account_payment_details')
+            and   type = 'U')
+   drop table account_payment_details
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('account_payment_link_lawsuit')
+            and   name  = 'fk_lawsuit_detail_ref_account_payment_link_lawsuit_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index account_payment_link_lawsuit.fk_lawsuit_detail_ref_account_payment_link_lawsuit_FK
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('account_payment_link_lawsuit')
+            and   name  = 'fk_account_payment_details_ref_account_payment_link_lawsuit_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index account_payment_link_lawsuit.fk_account_payment_details_ref_account_payment_link_lawsuit_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('account_payment_link_lawsuit')
+            and   type = 'U')
+   drop table account_payment_link_lawsuit
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('bank_file_detail')
+            and   name  = 'fk_bank_file_ref_bank_file_detail_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index bank_file_detail.fk_bank_file_ref_bank_file_detail_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('bank_file_detail')
+            and   type = 'U')
+   drop table bank_file_detail
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('city')
+            and   name  = 'fk_city_ref_mo_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index city.fk_city_ref_mo_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('city')
+            and   type = 'U')
+   drop table city
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('flat')
+            and   name  = 'fk_flat_ref_house_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index flat.fk_flat_ref_house_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('flat')
+            and   type = 'U')
+   drop table flat
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('lawsuit')
+            and   name  = 'fk_owner_term_ref_lawsuit_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index lawsuit.fk_owner_term_ref_lawsuit_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('lawsuit')
+            and   type = 'U')
+   drop table lawsuit
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('lawsuit_detail')
+            and   name  = 'fk_service_ref_lawsuit_detail_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index lawsuit_detail.fk_service_ref_lawsuit_detail_FK
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('lawsuit_detail')
+            and   name  = 'fk_lawsuit_ref_lawsuit_detail_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index lawsuit_detail.fk_lawsuit_ref_lawsuit_detail_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('lawsuit_detail')
+            and   type = 'U')
+   drop table lawsuit_detail
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('owner')
+            and   name  = 'fk_owner_type_ref_owner_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index owner.fk_owner_type_ref_owner_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('owner')
+            and   type = 'U')
+   drop table owner
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('owner_term')
+            and   name  = 'fk_account_ref_owner_term_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index owner_term.fk_account_ref_owner_term_FK
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('owner_term')
+            and   name  = 'fk_owner_ref_owner_term_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index owner_term.fk_owner_ref_owner_term_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('owner_term')
+            and   type = 'U')
+   drop table owner_term
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('owner_type')
+            and   type = 'U')
+   drop table owner_type
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('ro_mo')
+            and   type = 'U')
+   drop table ro_mo
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('service')
+            and   type = 'U')
+   drop table service
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('street')
+            and   name  = 'fk_street_type_ref_street_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index street.fk_street_type_ref_street_FK
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('street')
+            and   name  = 'fk_street_ref_city_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index street.fk_street_ref_city_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('street')
+            and   type = 'U')
+   drop table street
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('street_type')
+            and   type = 'U')
+   drop table street_type
+go
+
+/*==============================================================*/
+/* Table: Bank                                                  */
+/*==============================================================*/
+create table Bank (
+   bank_id              int                  identity,
+   bank_name            varchar(255)         not null,
+   constraint PK_BANK primary key nonclustered (bank_id)
+)
+go
+
+/*==============================================================*/
+/* Table: Bank_file                                             */
+/*==============================================================*/
+create table Bank_file (
+   bank_file_id         int                  identity,
+   bank_id              int                  not null,
+   bank_file_name       varchar(255)         not null,
+   bank_file_dt_create  datetime             not null,
+   bank_file_dt_load    datetime             null,
+   bank_file_crc        varchar(255)         null,
+   constraint PK_BANK_FILE primary key nonclustered (bank_file_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_bank_ref_bank_file_FK                              */
+/*==============================================================*/
+create index fk_bank_ref_bank_file_FK on Bank_file (
+bank_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: House                                                 */
+/*==============================================================*/
+create table House (
+   house_id             int                  identity,
+   street_id            int                  not null,
+   house_name           varchar(255)         not null,
+   constraint PK_HOUSE primary key nonclustered (house_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_house_ref_street_FK                                */
+/*==============================================================*/
+create index fk_house_ref_street_FK on House (
+street_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: account                                               */
+/*==============================================================*/
+create table account (
+   account_id           int                  identity,
+   flat_id              int                  not null,
+   account_name         varchar(255)         not null,
+   account_dt_start     datetime             not null,
+   account_st_end       datetime             not null,
+   constraint PK_ACCOUNT primary key nonclustered (account_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_account_join_flat_FK                               */
+/*==============================================================*/
+create index fk_account_join_flat_FK on account (
+flat_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: account_payment                                       */
+/*==============================================================*/
+create table account_payment (
+   account_payment_id   Bigint               identity,
+   bank_file_detail_id  Bigint               not null,
+   account_id           int                  not null,
+   acc_pay_date         datetime             not null,
+   acc_pay_accept_date  datetime             not null,
+   acc_pay_term_date    datetime             not null,
+   acc_pay_amount       numeric(12,2)        not null,
+   acc_pay_type         int                  not null,
+   constraint PK_ACCOUNT_PAYMENT primary key nonclustered (account_payment_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_account_ref_account_payment_FK                     */
+/*==============================================================*/
+create index fk_account_ref_account_payment_FK on account_payment (
+account_id ASC
+)
+go
+
+/*==============================================================*/
+/* Index: fk_bank_file_detail_ref_account_payment_FK            */
+/*==============================================================*/
+create index fk_bank_file_detail_ref_account_payment_FK on account_payment (
+bank_file_detail_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: account_payment_details                               */
+/*==============================================================*/
+create table account_payment_details (
+   account_payment_detail_id Bigint               identity,
+   account_payment_id   Bigint               not null,
+   service_id           int                  not null,
+   acco_pay_detail_amount decimal(12,2)        not null,
+   constraint PK_ACCOUNT_PAYMENT_DETAILS primary key nonclustered (account_payment_detail_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_service_ref_account_payment_details_FK             */
+/*==============================================================*/
+create index fk_service_ref_account_payment_details_FK on account_payment_details (
+service_id ASC
+)
+go
+
+/*==============================================================*/
+/* Index: fk_account_payment_ref_account_payment_detail_FK      */
+/*==============================================================*/
+create index fk_account_payment_ref_account_payment_detail_FK on account_payment_details (
+account_payment_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: account_payment_link_lawsuit                          */
+/*==============================================================*/
+create table account_payment_link_lawsuit (
+   account_payment_link_lawsuit_id Bigint               identity,
+   lawsuit_detail_id    Bigint               not null,
+   account_payment_detail_id Bigint               not null,
+   acc_cred_amount      numeric(12,2)        not null,
+   constraint PK_ACCOUNT_PAYMENT_LINK_LAWSUI primary key nonclustered (account_payment_link_lawsuit_id)
+)
+go
+
+/*=======================================================================*/
+/* Index: fk_account_payment_details_ref_account_payment_link_lawsuit_FK */
+/*=======================================================================*/
+create index fk_account_payment_details_ref_account_payment_link_lawsuit_FK on account_payment_link_lawsuit (
+account_payment_detail_id ASC
+)
+go
+
+/*==============================================================*/
+/* Index: fk_lawsuit_detail_ref_account_payment_link_lawsuit_FK */
+/*==============================================================*/
+create index fk_lawsuit_detail_ref_account_payment_link_lawsuit_FK on account_payment_link_lawsuit (
+lawsuit_detail_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: bank_file_detail                                      */
+/*==============================================================*/
+create table bank_file_detail (
+   bank_file_detail_id  Bigint               identity,
+   bank_file_id         int                  not null,
+   bank_file_row        varchar(max)         not null,
+   bank_file_payment_date datetime             not null,
+   constraint PK_BANK_FILE_DETAIL primary key nonclustered (bank_file_detail_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_bank_file_ref_bank_file_detail_FK                  */
+/*==============================================================*/
+create index fk_bank_file_ref_bank_file_detail_FK on bank_file_detail (
+bank_file_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: city                                                  */
+/*==============================================================*/
+create table city (
+   city_id              numeric              identity,
+   mo_id                indeter              not null,
+   city_name            varchar(255)         not null,
+   constraint PK_CITY primary key nonclustered (city_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_city_ref_mo_FK                                     */
+/*==============================================================*/
+create index fk_city_ref_mo_FK on city (
+mo_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: flat                                                  */
+/*==============================================================*/
+create table flat (
+   flat_id              int                  identity,
+   house_id             int                  not null,
+   flat_name            varchar(255)         not null,
+   constraint PK_FLAT primary key nonclustered (flat_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_flat_ref_house_FK                                  */
+/*==============================================================*/
+create index fk_flat_ref_house_FK on flat (
+house_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: lawsuit                                               */
+/*==============================================================*/
+create table lawsuit (
+   lawsuit_id           int                  not null,
+   owner_term_id        int                  not null,
+   law_dt_beg           datetime             not null,
+   law_debt_dt_beg      datetime             not null,
+   law_debt_dt_end      datetime             not null,
+   constraint PK_LAWSUIT primary key nonclustered (lawsuit_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_owner_term_ref_lawsuit_FK                          */
+/*==============================================================*/
+create index fk_owner_term_ref_lawsuit_FK on lawsuit (
+owner_term_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: lawsuit_detail                                        */
+/*==============================================================*/
+create table lawsuit_detail (
+   lawsuit_detail_id    Bigint               identity,
+   lawsuit_id           int                  not null,
+   service_id           int                  not null,
+   law_debt_amount      numeric(12,2)        not null,
+   constraint PK_LAWSUIT_DETAIL primary key nonclustered (lawsuit_detail_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_lawsuit_ref_lawsuit_detail_FK                      */
+/*==============================================================*/
+create index fk_lawsuit_ref_lawsuit_detail_FK on lawsuit_detail (
+lawsuit_id ASC
+)
+go
+
+/*==============================================================*/
+/* Index: fk_service_ref_lawsuit_detail_FK                      */
+/*==============================================================*/
+create index fk_service_ref_lawsuit_detail_FK on lawsuit_detail (
+service_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: owner                                                 */
+/*==============================================================*/
+create table owner (
+   owner_id             int                  identity,
+   owner_name           varchar(255)         not null,
+   owner_type_id        int                  not null,
+   constraint PK_OWNER primary key nonclustered (owner_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_owner_type_ref_owner_FK                            */
+/*==============================================================*/
+create index fk_owner_type_ref_owner_FK on owner (
+owner_type_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: owner_term                                            */
+/*==============================================================*/
+create table owner_term (
+   owner_term_id        int                  identity,
+   account_id           int                  not null,
+   owner_term_dt_start  datetime             not null,
+   owner_term_dt_end    datetime             not null,
+   owner_id             int                  not null,
+   constraint PK_OWNER_TERM primary key nonclustered (owner_term_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_owner_ref_owner_term_FK                            */
+/*==============================================================*/
+create index fk_owner_ref_owner_term_FK on owner_term (
+owner_id ASC
+)
+go
+
+/*==============================================================*/
+/* Index: fk_account_ref_owner_term_FK                          */
+/*==============================================================*/
+create index fk_account_ref_owner_term_FK on owner_term (
+account_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: owner_type                                            */
+/*==============================================================*/
+create table owner_type (
+   owner_type_id        int                  identity,
+   owner_type_name      varchar(255)         not null,
+   constraint PK_OWNER_TYPE primary key nonclustered (owner_type_id)
+)
+go
+
+/*==============================================================*/
+/* Table: ro_mo                                                 */
+/*==============================================================*/
+create table ro_mo (
+   mo_id                int                  identity,
+   mo_name              varchar(255)         not null,
+   constraint PK_RO_MO primary key nonclustered (mo_id)
+)
+go
+
+/*==============================================================*/
+/* Table: service                                               */
+/*==============================================================*/
+create table service (
+   service_id           int                  identity,
+   service_name         varchar(255)         not null,
+   constraint PK_SERVICE primary key nonclustered (service_id)
+)
+go
+
+/*==============================================================*/
+/* Table: street                                                */
+/*==============================================================*/
+create table street (
+   street_id            int                  identity,
+   city_id              int                  not null,
+   street_type_id       int                  not null,
+   street_name          Varchar(255)         not null,
+   constraint PK_STREET primary key nonclustered (street_id)
+)
+go
+
+/*==============================================================*/
+/* Index: fk_street_ref_city_FK                                 */
+/*==============================================================*/
+create index fk_street_ref_city_FK on street (
+city_id ASC
+)
+go
+
+/*==============================================================*/
+/* Index: fk_street_type_ref_street_FK                          */
+/*==============================================================*/
+create index fk_street_type_ref_street_FK on street (
+street_type_id ASC
+)
+go
+
+/*==============================================================*/
+/* Table: street_type                                           */
+/*==============================================================*/
+create table street_type (
+   street_type_id       int                  identity,
+   street_type_name     varchar(255)         not null,
+   constraint PK_STREET_TYPE primary key nonclustered (street_type_id)
+)
+go
+
+alter table Bank_file
+   add constraint fk_bank_file_ref_bank_file_detail foreign key (bank_id)
+      references Bank (bank_id)
+go
+
+alter table House
+   add constraint fk_house_ref_street foreign key (street_id)
+      references street (street_id)
+go
+
+alter table account
+   add constraint fk_account_join_flat foreign key (flat_id)
+      references flat (flat_id)
+go
+
+alter table account_payment
+   add constraint fk_account_ref_account_payment foreign key (account_id)
+      references account (account_id)
+go
+
+alter table account_payment
+   add constraint fk_bank_file_detail_ref_account_payment foreign key (bank_file_detail_id)
+      references bank_file_detail (bank_file_detail_id)
+go
+
+alter table account_payment_details
+   add constraint fk_account_payment_ref_account_payment_detail foreign key (account_payment_id)
+      references account_payment (account_payment_id)
+go
+
+alter table account_payment_details
+   add constraint fk_service_ref_account_payment_details foreign key (service_id)
+      references service (service_id)
+go
+
+alter table account_payment_link_lawsuit
+   add constraint fk_account_payment_details_ref_account_payment_link_lawsuit foreign key (account_payment_detail_id)
+      references account_payment_details (account_payment_detail_id)
+go
+
+alter table account_payment_link_lawsuit
+   add constraint fk_lawsuit_detail_ref_account_payment_link_lawsuit foreign key (lawsuit_detail_id)
+      references lawsuit_detail (lawsuit_detail_id)
+go
+
+alter table bank_file_detail
+   add constraint fk_bank_file_ref_bank_file_detail foreign key (bank_file_id)
+      references Bank_file (bank_file_id)
+go
+
+alter table city
+   add constraint fk_city_ref_mo foreign key (mo_id)
+      references ro_mo (mo_id)
+go
+
+alter table flat
+   add constraint fk_flat_ref_house foreign key (house_id)
+      references House (house_id)
+go
+
+alter table lawsuit
+   add constraint fk_owner_term_ref_lawsuit foreign key (owner_term_id)
+      references owner_term (owner_term_id)
+go
+
+alter table lawsuit_detail
+   add constraint fk_lawsuit_ref_lawsuit_detail foreign key (lawsuit_id)
+      references lawsuit (lawsuit_id)
+go
+
+alter table lawsuit_detail
+   add constraint fk_service_ref_lawsuit_detail foreign key (service_id)
+      references service (service_id)
+go
+
+alter table owner
+   add constraint fk_owner_type_ref_owner foreign key (owner_type_id)
+      references owner_type (owner_type_id)
+go
+
+alter table owner_term
+   add constraint fk_account_ref_owner_term foreign key (account_id)
+      references account (account_id)
+go
+
+alter table owner_term
+   add constraint fk_owner_ref_owner_term foreign key (owner_id)
+      references owner (owner_id)
+go
+
+alter table street
+   add constraint fk_street_ref_city foreign key (city_id)
+      references city (city_id)
+go
+
+alter table street
+   add constraint fk_street_type_ref_street foreign key (street_type_id)
+      references street_type (street_type_id)
+go
