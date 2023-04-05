@@ -1212,3 +1212,29 @@ alter table addr.street
    add constraint fk_street_type_ref_street foreign key (street_type_id)
       references addr.street_type (street_type_id)
 go
+
+--Ограничения добавлены вручную (в следующей версии будут сгенерированы в таблицах автоматически)
+ALTER TABLE prop.owner
+ADD CONSTRAINT DF_OWNER_SEX_UNKNOWN 
+DEFAULT 0 FOR owner_sex
+go
+
+ALTER TABLE prop.owner
+WITH CHECK ADD CONSTRAINT CKC_OWNER_SEX_OWNER 
+CHECK (owner_sex between 0 and 2)
+go
+
+ALTER TABLE addr.account
+WITH CHECK ADD CONSTRAINT CKC_ACCOUNT_DT_START_ACCOUNT
+CHECK (account_dt_start between '20000101' and '20991231')
+go
+
+ALTER TABLE addr.account
+WITH CHECK ADD CONSTRAINT CKC_ACCOUNT_DT_END_ACCOUNT
+CHECK (account_dt_end >= account_dt_start)
+go
+
+ALTER TABLE addr.account
+ADD CONSTRAINT DF_ACCOUNT_DT_END 
+DEFAULT '20990101' FOR account_dt_end
+go
