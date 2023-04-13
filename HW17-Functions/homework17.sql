@@ -248,7 +248,7 @@ EXEC Sales.SP_InvoicesAsJSON @CustomerID = 832
  --  CPU time = 31 ms,  elapsed time = 95 ms.
 
 SET STATISTICS IO, TIME OFF;
-
+--+ План запросов. Выводы - по функции план запроса отсутствует (весь запуск функции собран в один блок). По процедуре есть полноценный план запроса и развернутая IO статистика.
 
 
 
