@@ -7,20 +7,14 @@
 3. Из очереди инициатора его забирает процедура SP_ProcessQueryResponse_Report_InvoiceByOrders, завершая диалог окончательно.
 
 
-
-EXEC SP_RequestReport_InvoiceByOrders @CustomerID = 44, @dt_beg = '20140601', @dt_end = '20150101'
-
-select  count(*) from Sales.Invoices
-where CustomerID = 44 and InvoiceDate between '20140601' and '20150101'
---12
-
-SELECT * from Reports.CustomerInvoiceByOrders -- таблица со сформированными отчетами
-
---Проверки очередей
-select * from sys.transmission_queue
-select * from TargetQueueReport_invoiceByOrders
-select * from InitiatorQueueReport_invoiceByOrders
-
 Скрин, как все работает:
 
 https://disk.yandex.ru/i/9_SZUHvFipcP-A
+
+
+Homework18_QUEUE.sql - Общая настройка очередей
+Homework18_SP_ProcessQueryRequest_Report_InvoiceByOrders.sql - Обработка запроса из таргет-очереди
+Homework18_SP_ProcessQueryResponse_Report_InvoiceByOrders.sql - Обработка ответа в инициаторе
+Homework18_SP_Report_InvoiceByOrders.sql - Бизнес процедура формирования отчета
+Homework18_SP_RequestReport_InvoiceByOrders.sql - Процедура постановки запроса на отчет в таргет-очередь
+Homework18_Sample.sql - Пример запуска и проверки очереди
