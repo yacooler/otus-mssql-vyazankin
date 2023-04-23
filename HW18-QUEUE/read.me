@@ -1,0 +1,26 @@
+При выключенных ридерах всё работает корректно.
+
+1. Процедура EXEC SP_RequestReport_InvoiceByOrders @CustomerID = 44, @dt_beg = '20140601', @dt_end = '20150101' ставит сообщение в целевую очередь
+2. Из целевой очереди его забирает процедура SP_ProcessQueryRequest_Report_InvoiceByOrders, парсит параметры и запускает бизнес-логику, 
+   выделенную в процедуре SP_Report_InvoiceByOrders. Далее формируется сообщение, возвращающее код записи в сформированном отчете
+   и возвращается в очередь = инициатор, попутно завершая диалог со своей стороны
+3. Из очереди инициатора его забирает процедура SP_ProcessQueryResponse_Report_InvoiceByOrders, завершая диалог окончательно.
+
+
+
+EXEC SP_RequestReport_InvoiceByOrders @CustomerID = 44, @dt_beg = '20140601', @dt_end = '20150101'
+
+select  count(*) from Sales.Invoices
+where CustomerID = 44 and InvoiceDate between '20140601' and '20150101'
+--12
+
+SELECT * from Reports.CustomerInvoiceByOrders -- таблица со сформированными отчетами
+
+--Проверки очередей
+select * from sys.transmission_queue
+select * from TargetQueueReport_invoiceByOrders
+select * from InitiatorQueueReport_invoiceByOrders
+
+Скрин, как все работает:
+
+https://disk.yandex.ru/i/9_SZUHvFipcP-A
