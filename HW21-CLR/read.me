@@ -1,0 +1,15 @@
+Агрегатная функция сложения простых дробей. Рабочее назначение - при разборе выписок из Росреестра в XML доли приходят в простом виде. 
+Необходимо иметь возможность также в простом виде проверять, что все доли учтены в выписке (Общая сумма 1/1) и суммировать доли собственности,
+принадлежащие одному собственнику.
+
+Результат работы:
+
+https://disk.yandex.ru/i/ok3VfEHi1G5XWA
+
+
+Наибольшие трудности вызвала сериализация, когда часть полей пытался хранить в виде типов, не поддерживающий нативную сериализацию.
+Также пока не смог победить ошибку развертывания (WITH PERMISSION_SET = UNSAFE, пробовал по методичке, не вышло. Разворачивал вручную скрипт без неё)
+
+(63,1): SQL72014: Framework Microsoft SqlClient Data Provider: Сообщение 10327, уровень 14, состояние 1, строка 1 CREATE ASSEMBLY for assembly 'OtusHW' failed 
+because assembly 'OtusHW' is not trusted. The assembly is trusted when either of the following is true: the assembly is signed with a certificate or an 
+asymmetric key that has a corresponding login with UNSAFE ASSEMBLY permission, or the assembly is trusted using sp_add_trusted_assembly.
