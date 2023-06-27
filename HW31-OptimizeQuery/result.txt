@@ -1,0 +1,163 @@
+По оптимизации хинтами - единственный хинт, который я бы тут применил - with recompile, на случай, если данные меняются быстро, т.к. количество таблиц в запросе не очень большое, 
+прибивать используемые индексы и тем более - порядок таблиц считается плохим тоном. 
+
+По непосредственно оптимизации 
+Убрал функцию из сравнения дат, убрал выбор кода товара подзапросом, убрал сортировку (будем считать, что ее делает клиент, но можно вернуть)
+
+Под вопросом две таблицы - их поля не участвуют в выборке непосредственно, но так как они объединяются INNER JOIN, по бизнесу может оказаться,
+что в них отличное количество записей и они работают как фильтры. Тут нужно уточнять у условного "бизнеса", для чего эти фильтры применены.
+--JOIN Sales.CustomerTransactions AS Trans ON Trans.InvoiceID = Inv.InvoiceID 		
+--JOIN Warehouse.StockItemTransactions AS ItemTrans ON ItemTrans.StockItemID = det.StockItemID 
+
+
+
+Сложнее всего было оптимизировать часть, где надо выбрать всех Customers, у которых общая сумма заказов больше 250000 - сделать это внутри одного запроса мне не удалось.
+Проблемой видится то, что наша основная выборка берет только малую часть данных из Orders и OrderLines (из-за наличия INNER JOIN с другими таблицами по условиям),
+соответственно в один подход данные выбрать окном или sum(case when... then... else 0 end) в простом виде не получилось.
+
+------------------------------------------ИТЕРАЦИЯ 1-----------------------------------------------------------------------------------------------------------------------------------
+Пробовал использовать табличную переменную в памяти DECLARE @ TABLE - на удивление, ничего не изменилось в плане количества сканов OrderLines и Ordeds, хотя в ней около 462 строки и 
+они все предварительно подготовлены, nested loop при ее объединении всё портил.
+
+DECLARE @customers TABLE(
+	CustomerID int NOT NULL);
+
+INSERT INTO @customers(CustomerID)
+SELECT 
+    ordTotal.CustomerID
+FROM 
+    Sales.OrderLines AS Total 
+    Join Sales.Orders AS ordTotal On ordTotal.OrderID = Total.OrderID 
+GROUP BY ordTotal.CustomerID
+HAVING SUM(Total.UnitPrice * Total.Quantity)  > 250000;
+
+Select 
+  ord.CustomerID		CustomerID, 
+  det.StockItemID		StockItemID, 
+  SUM(det.UnitPrice)	UnitPrice, 
+  SUM(det.Quantity)		Quantity, 
+  COUNT(ord.OrderID)	OrderID 
+FROM 
+  Sales.Orders AS ord 
+  JOIN Sales.OrderLines AS det ON det.OrderID = ord.OrderID 
+  JOIN Sales.Invoices AS Inv 
+	ON Inv.OrderID = ord.OrderID 
+	AND Inv.BillToCustomerID != ord.CustomerID 
+	AND Inv.InvoiceDate = ord.OrderDate
+  --JOIN Sales.CustomerTransactions AS Trans ON Trans.InvoiceID = Inv.InvoiceID 		
+  --JOIN Warehouse.StockItemTransactions AS ItemTrans ON ItemTrans.StockItemID = det.StockItemID 
+  JOIN  Warehouse.StockItems It 
+	ON It.StockItemID = det.StockItemID 
+	AND IT.SupplierID = 12
+JOIN @customers c
+	ON ord.CustomerID = c.CustomerID
+GROUP BY 
+  ord.CustomerID, 
+  det.StockItemID;
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 30 ms, elapsed time = 30 ms.
+Table 'OrderLines'. Scan count 2, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 163, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'OrderLines'. Segment reads 1, segment skipped 0.
+Table '#A4AFBF42'. Scan count 0, logical reads 462, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Orders'. Scan count 1, logical reads 191, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+(462 rows affected)
+
+(1 row affected)
+
+ SQL Server Execution Times:
+   CPU time = 94 ms,  elapsed time = 90 ms.
+
+(3619 rows affected)
+Table 'OrderLines'. Scan count 2, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 168, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'OrderLines'. Segment reads 1, segment skipped 0.
+Table 'Invoices'. Scan count 54863, logical reads 277896, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Orders'. Scan count 462, logical reads 169115, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table '#A4AFBF42'. Scan count 1, logical reads 1, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'StockItems'. Scan count 1, logical reads 2, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+(1 row affected)
+
+ SQL Server Execution Times:
+   CPU time = 547 ms,  elapsed time = 559 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+
+
+------------------------------------------------------------------------------------ИТЕРАЦИЯ 2-----------------------------------------------------------------------------------------------
+Для временной таблицы в tempDB картина совсем другая, на этом варианте и остановился - тут таблица #customers джойнится с верхней Sales.Orders AS ord по хэшматч, что сразу уменьшает
+количество чтений самых больших таблиц Sales.Orders AS ord  и соответственно Sales.Invoices AS Inv.
+
+DROP TABLE #customers;
+CREATE TABLE #customers(
+	CustomerID int NOT NULL);
+
+INSERT INTO #customers(CustomerID)
+SELECT 
+    ordTotal.CustomerID
+FROM 
+    Sales.OrderLines AS Total 
+    Join Sales.Orders AS ordTotal On ordTotal.OrderID = Total.OrderID 
+GROUP BY ordTotal.CustomerID
+HAVING SUM(Total.UnitPrice * Total.Quantity)  > 250000;
+
+Select 
+  ord.CustomerID		CustomerID, 
+  det.StockItemID		StockItemID, 
+  SUM(det.UnitPrice)	UnitPrice, 
+  SUM(det.Quantity)		Quantity, 
+  COUNT(ord.OrderID)	OrderID 
+FROM 
+  Sales.Orders AS ord 
+  JOIN Sales.OrderLines AS det ON det.OrderID = ord.OrderID 
+  JOIN Sales.Invoices AS Inv 
+	ON Inv.OrderID = ord.OrderID 
+	AND Inv.BillToCustomerID != ord.CustomerID 
+	AND Inv.InvoiceDate = ord.OrderDate
+  --JOIN Sales.CustomerTransactions AS Trans ON Trans.InvoiceID = Inv.InvoiceID 		
+  --JOIN Warehouse.StockItemTransactions AS ItemTrans ON ItemTrans.StockItemID = det.StockItemID 
+  JOIN  Warehouse.StockItems It 
+	ON It.StockItemID = det.StockItemID 
+	AND IT.SupplierID = 12
+JOIN #customers
+	ON ord.CustomerID = #customers.CustomerID
+GROUP BY 
+  ord.CustomerID, 
+  det.StockItemID;
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+Table 'OrderLines'. Scan count 2, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 163, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'OrderLines'. Segment reads 1, segment skipped 0.
+Table '#customers__________________________________________________________________________________________________________00000000009C'. Scan count 0, logical reads 462, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Orders'. Scan count 1, logical reads 191, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+(462 rows affected)
+
+(1 row affected)
+
+ SQL Server Execution Times:
+   CPU time = 110 ms,  elapsed time = 97 ms.
+
+(3619 rows affected)
+Table 'StockItems'. Scan count 1, logical reads 2, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'OrderLines'. Scan count 4, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 336, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'OrderLines'. Segment reads 1, segment skipped 0.
+Table 'Orders'. Scan count 3, logical reads 725, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table '#customers__________________________________________________________________________________________________________00000000009C'. Scan count 3, logical reads 1, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Invoices'. Scan count 3, logical reads 11994, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+(1 row affected)
+
+ SQL Server Execution Times:
+   CPU time = 125 ms,  elapsed time = 65 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+
